@@ -15,8 +15,7 @@ class DetailPesanan extends Model
         'jumlah',
         'subtotal'
     ];
-
-    // Relasi balik ke produk (Untuk tahu nama makanan yang dibeli)
+    
     public function produk()
     {
         return $this->belongsTo(Produk::class);
