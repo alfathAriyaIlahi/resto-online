@@ -7,13 +7,9 @@ use Illuminate\Http\Request;
 
 class ReservasiController extends Controller
 {
-    // TAMBAHKAN FUNGSI INI
     public function index()
     {
-        // Mengambil semua data reservasi terbaru
         $pesanans = Reservasi::latest()->get();
-
-        // Mengirim data ke view admin/reservasi/index.blade.php
         return view('admin.reservasi.index', compact('pesanans'));
     }
 
