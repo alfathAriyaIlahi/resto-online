@@ -22,7 +22,6 @@ class PesananController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                // Simpan Header Pesanan
                 $pesanan = Pesanan::create([
                     'user_id'           => Auth::id(),
                     'nama_pelanggan'    => Auth::user()->name,
