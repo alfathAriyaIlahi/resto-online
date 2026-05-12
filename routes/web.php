@@ -7,6 +7,7 @@ use App\Http\Controllers\KuponController;
 use App\Http\Controllers\Admin\KategoriAdminController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\ReservasiAdminController;
+use App\Http\Controllers\Admin\UserController;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::delete('/reservasi/{id}', [ReservasiAdminController::class, 'destroy'])->name('reservasi.destroy');
 
     Route::post('/reservasi/store', [PesananController::class, 'store'])->name('reservasi.store');
+
+    Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
 });
 
 require __DIR__.'/auth.php';
