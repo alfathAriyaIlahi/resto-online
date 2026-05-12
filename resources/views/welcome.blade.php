@@ -112,25 +112,45 @@
         </div>
         <div>
             @auth
-                <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-4 rounded-2xl border border-gray-200 bg-gray-50 p-8 shadow-sm">
+                <form action="{{ route('reservasi.store') }}" method="POST" class="space-y-4 rounded-2xl border border-gray-200 bg-white p-8 shadow-xl shadow-gray-200/50">
                     @csrf
+                    <input type="hidden" name="alamat" value="{{ Auth::user()->alamat }}">
+
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <input name="nama" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" type="text" value="{{ Auth::user()->name }}" required readonly>
-                        <input name="email" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" type="email" value="{{ Auth::user()->email }}" required readonly>
+                        <div class="text-left">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nama</label>
+                            <input name="nama" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border bg-gray-50 transition" type="text" value="{{ Auth::user()->name }}" required readonly>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Email</label>
+                            <input name="email" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border bg-gray-50 transition" type="email" value="{{ Auth::user()->email }}" required readonly>
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 text-left">
-                        <input name="nomor_hp" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" type="tel" placeholder="Nomor HP" required>
-                        <input name="jumlah_orang" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" type="number" placeholder="Jumlah Orang" required>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nomor HP</label>
+                            <input name="nomor_hp" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border bg-gray-50 transition" type="tel" value="{{ Auth::user()->nomor_hp }}" required readonly>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Jumlah Orang</label>
+                            <input name="jumlah_orang" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border focus:border-orange-500 transition" type="number" placeholder="Contoh: 4" required>
+                        </div>
                     </div>
-                    <input name="waktu_reservasi" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" type="datetime-local" required>
-                    <textarea name="catatan" class="w-full rounded-lg border-gray-300 p-3 text-sm outline-none border" rows="3" placeholder="Catatan Tambahan"></textarea>
-                    <button class="w-full rounded-lg bg-gray-800 py-4 text-sm font-bold text-white shadow-lg transition hover:bg-gray-900" type="submit">Konfirmasi Reservasi Meja</button>
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Waktu Reservasi</label>
+                        <input name="waktu_reservasi" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border focus:border-orange-500 transition" type="datetime-local" required>
+                    </div>
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Catatan Tambahan</label>
+                        <textarea name="catatan" class="w-full rounded-xl border-gray-200 p-4 text-sm outline-none border focus:border-orange-500 transition" rows="3" placeholder="Contoh: Kursi bayi, meja pojok..."></textarea>
+                    </div>
+                    <button class="w-full rounded-xl bg-gray-900 py-4 text-sm font-bold text-white shadow-lg transition hover:bg-black active:scale-95" type="submit">Konfirmasi Reservasi Meja</button>
                 </form>
             @else
-                <div class="bg-gray-50 rounded-2xl p-8 border border-dashed border-gray-300 text-center">
-                    <p class="text-gray-600 mb-4 text-sm">Silakan login untuk melakukan reservasi meja.</p>
+                <div class="bg-gray-50 rounded-3xl p-12 border border-dashed border-gray-300 text-center">
+                    <p class="text-gray-600 mb-6 text-sm">Silakan login terlebih dahulu untuk melakukan reservasi meja.</p>
                     <div class="flex gap-2 justify-center">
-                        <a href="{{ route('login') }}" class="px-6 py-3 bg-gray-800 text-white rounded-xl text-sm font-bold">Masuk</a>
+                        <a href="{{ route('login') }}" class="px-10 py-4 bg-orange-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-100 hover:bg-orange-700 transition">Masuk Akun</a>
                     </div>
                 </div>
             @endauth
@@ -166,7 +186,7 @@
                 <div id="cart-footer" class="mt-8 border-t border-gray-100 pt-8 hidden text-left">
                     <form id="form-pesanan">
                         @csrf
-                        
+
                         <div class="mb-6">
                             <label class="block text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">Metode Pengantaran</label>
                             <div class="flex gap-4">
@@ -183,7 +203,7 @@
 
                         <div id="alamat-container" class="hidden mb-6">
                             <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Alamat Lengkap Pengiriman</label>
-                            <textarea name="alamat_lengkap" id="input_alamat" class="w-full rounded-xl border-gray-200 p-3 text-sm border outline-none focus:border-orange-500" rows="2" placeholder="Masukkan alamat pengantaran..."></textarea>
+                            <textarea name="alamat_lengkap" id="input_alamat" class="w-full rounded-xl border-gray-200 p-3 text-sm border outline-none focus:border-orange-500" rows="2" placeholder="Masukkan alamat pengantaran...">@auth {{ Auth::user()->alamat }} @endauth</textarea>
                         </div>
 
                         <div class="mb-6">
@@ -220,17 +240,16 @@
 <script>
     let cart = [];
 
-    // --- FUNGSI GLOBAL ---
     window.toggleCart = function() {
         document.getElementById('cart-modal').classList.toggle('hidden');
     }
 
     window.addToCart = function(id, name, price, img) {
         const item = cart.find(i => i.id === id);
-        if (item) { 
-            item.jumlah++; 
-        } else { 
-            cart.push({ id, name, price, img, jumlah: 1 }); 
+        if (item) {
+            item.jumlah++;
+        } else {
+            cart.push({ id, name, price, img, jumlah: 1 });
         }
         renderCart();
     }
@@ -257,7 +276,6 @@
         }
     }
 
-    // --- FUNGSI CEK KUPON DATABASE ---
     window.cekPromo = function() {
         const kodeInput = document.getElementById('input_promo');
         const kode = kodeInput.value.toUpperCase();
@@ -328,7 +346,7 @@
                         <button type="button" onclick="updateQty(${item.id}, 1)" class="size-7 rounded-full border border-orange-200 text-orange-600 hover:bg-orange-50">+</button>
                     </div>
                 </li>`;
-            
+
             hiddenInputs.innerHTML += `
                 <input type="hidden" name="items[${index}][produk_id]" value="${item.id}">
                 <input type="hidden" name="items[${index}][jumlah]" value="${item.jumlah}">
@@ -338,8 +356,7 @@
         cartCount.innerText = count;
         document.getElementById('total-harga-display').innerText = 'Rp ' + total.toLocaleString('id-ID');
         document.getElementById('total-harga-input').value = total;
-        
-        // Reset Kupon Jika Item Berubah (Proteksi Syarat Min Belanja)
+
         const inputPromo = document.getElementById('input_promo');
         const msgPromo = document.getElementById('promo-msg');
         if (inputPromo.readOnly) {
