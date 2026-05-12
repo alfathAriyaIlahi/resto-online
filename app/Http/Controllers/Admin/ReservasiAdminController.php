@@ -10,7 +10,6 @@ class ReservasiAdminController extends Controller
 {
     public function index()
     {
-        // Ambil data untuk ditampilkan di tabel admin
         $pesanans = Reservasi::latest()->get();
         return view('admin.reservasi.index', compact('pesanans'));
     }

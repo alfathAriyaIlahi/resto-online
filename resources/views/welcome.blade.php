@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Hero Section -->
 <section class="bg-white lg:h-screen lg:grid lg:place-content-center">
   <div class="mx-auto w-screen max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
     <div class="mx-auto max-w-prose text-center">
@@ -25,7 +24,6 @@
   </div>
 </section>
 
-<!-- Features Section -->
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
   <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
     <div class="flex items-start gap-4 rounded-lg border border-gray-200 p-6">
@@ -53,7 +51,6 @@
   </div>
 </div>
 
-<!-- Katalog Menu -->
 <section id="menu">
   <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
     <header>
@@ -107,7 +104,6 @@
   </div>
 </section>
 
-<!-- Section Reservasi Meja -->
 <div id="reservasi-form" class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 mb-20">
     <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
         <div class="md:py-4 text-left">
@@ -142,7 +138,6 @@
     </div>
 </div>
 
-<!-- Floating Cart Button -->
 <button onclick="toggleCart()" class="fixed bottom-10 right-10 z-50 flex items-center gap-2 rounded-full bg-orange-600 px-6 py-4 text-white shadow-2xl hover:bg-orange-700 transition-all active:scale-95">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -150,7 +145,6 @@
     <span id="cart-count" class="font-bold">0</span>
 </button>
 
-<!-- Modal Keranjang -->
 <div id="cart-modal" class="fixed inset-0 z-[60] hidden bg-gray-900/50 backdrop-blur-sm transition-opacity">
     <div class="flex min-h-full items-center justify-center p-4">
         <div class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl overflow-y-auto max-h-[85vh]">
@@ -164,7 +158,7 @@
 
             <div id="cart-items-container">
                 <div id="cart-empty" class="text-center py-16">
-                    <p class="text-gray-500 mb-4 text-lg">Keranjang masih kosong...</p>
+                    <p class="text-gray-500 mb-4 text-lg">Yah, keranjangnya masih kosong...</p>
                 </div>
 
                 <ul id="cart-list" class="space-y-6 hidden mb-8"></ul>
@@ -172,6 +166,7 @@
                 <div id="cart-footer" class="mt-8 border-t border-gray-100 pt-8 hidden text-left">
                     <form id="form-pesanan">
                         @csrf
+                        
                         <div class="mb-6">
                             <label class="block text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">Metode Pengantaran</label>
                             <div class="flex gap-4">
@@ -187,15 +182,15 @@
                         </div>
 
                         <div id="alamat-container" class="hidden mb-6">
-                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Alamat Lengkap</label>
-                            <textarea name="alamat_lengkap" id="input_alamat" class="w-full rounded-xl border-gray-200 p-3 text-sm border outline-none focus:border-orange-500" rows="2"></textarea>
+                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Alamat Lengkap Pengiriman</label>
+                            <textarea name="alamat_lengkap" id="input_alamat" class="w-full rounded-xl border-gray-200 p-3 text-sm border outline-none focus:border-orange-500" rows="2" placeholder="Masukkan alamat pengantaran..."></textarea>
                         </div>
 
                         <div class="mb-6">
                             <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Kode Promo</label>
                             <div class="flex gap-2">
-                                <input type="text" id="input_promo" name="kode_promo" class="flex-1 rounded-xl border-gray-200 p-3 text-sm border outline-none" placeholder="MAKANHEMAT">
-                                <button type="button" onclick="cekPromo()" class="bg-gray-800 text-white px-5 rounded-xl text-sm font-bold">Cek</button>
+                                <input type="text" id="input_promo" name="kode_promo" class="flex-1 rounded-xl border-gray-200 p-3 text-sm border outline-none" placeholder="Masukkan kode promo...">
+                                <button type="button" onclick="cekPromo()" class="bg-gray-800 text-white px-5 rounded-xl text-sm font-bold transition hover:bg-gray-900">Cek</button>
                             </div>
                             <p id="promo-msg" class="text-[10px] mt-1 hidden font-medium"></p>
                         </div>
@@ -225,14 +220,18 @@
 <script>
     let cart = [];
 
-    // Fungsi Global
+    // --- FUNGSI GLOBAL ---
     window.toggleCart = function() {
         document.getElementById('cart-modal').classList.toggle('hidden');
     }
 
     window.addToCart = function(id, name, price, img) {
         const item = cart.find(i => i.id === id);
-        if (item) { item.jumlah++; } else { cart.push({ id, name, price, img, jumlah: 1 }); }
+        if (item) { 
+            item.jumlah++; 
+        } else { 
+            cart.push({ id, name, price, img, jumlah: 1 }); 
+        }
         renderCart();
     }
 
@@ -254,21 +253,51 @@
         } else {
             container.classList.add('hidden');
             input.removeAttribute('required');
+            input.value = '';
         }
     }
 
+    // --- FUNGSI CEK KUPON DATABASE ---
     window.cekPromo = function() {
-        const kode = document.getElementById('input_promo').value.toUpperCase();
+        const kodeInput = document.getElementById('input_promo');
+        const kode = kodeInput.value.toUpperCase();
+        const totalAsli = cart.reduce((sum, item) => sum + (item.price * item.jumlah), 0);
         const msg = document.getElementById('promo-msg');
-        if (kode === 'MAKANHEMAT') {
-            msg.innerText = 'Kode Berhasil Digunakan!';
-            msg.className = 'text-[10px] mt-1 font-medium text-green-600';
+
+        if (!kode) return alert("Masukkan kode promo!");
+        if (totalAsli <= 0) return alert("Keranjang masih kosong!");
+
+        fetch('/cek-kupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ kode: kode, total_belanja: totalAsli })
+        })
+        .then(res => res.json())
+        .then(data => {
             msg.classList.remove('hidden');
-        } else {
-            msg.innerText = 'Kode tidak valid.';
-            msg.className = 'text-[10px] mt-1 font-medium text-red-500';
-            msg.classList.remove('hidden');
-        }
+            if (data.valid) {
+                let diskon = data.nilai;
+                if (data.jenis === 'persen') {
+                    diskon = (totalAsli * data.nilai) / 100;
+                }
+
+                let totalBaru = totalAsli - diskon;
+
+                document.getElementById('total-harga-display').innerText = 'Rp ' + totalBaru.toLocaleString('id-ID');
+                document.getElementById('total-harga-input').value = totalBaru;
+
+                msg.innerText = data.message + " (Potongan: Rp " + diskon.toLocaleString('id-ID') + ")";
+                msg.className = 'text-[10px] mt-1 font-medium text-green-600';
+                kodeInput.readOnly = true;
+            } else {
+                msg.innerText = data.message;
+                msg.className = 'text-[10px] mt-1 font-medium text-red-500';
+            }
+        })
+        .catch(() => alert("Terjadi kesalahan sistem saat cek kupon."));
     }
 
     function renderCart() {
@@ -294,19 +323,30 @@
                         <p class="text-sm text-orange-600 font-semibold">Rp ${item.price.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="updateQty(${item.id}, -1)" class="size-7 rounded-full border border-gray-200">-</button>
+                        <button type="button" onclick="updateQty(${item.id}, -1)" class="size-7 rounded-full border border-gray-200 hover:bg-gray-100">-</button>
                         <span class="font-bold">${item.jumlah}</span>
-                        <button type="button" onclick="updateQty(${item.id}, 1)" class="size-7 rounded-full border border-orange-200 text-orange-600">+</button>
+                        <button type="button" onclick="updateQty(${item.id}, 1)" class="size-7 rounded-full border border-orange-200 text-orange-600 hover:bg-orange-50">+</button>
                     </div>
                 </li>`;
+            
             hiddenInputs.innerHTML += `
                 <input type="hidden" name="items[${index}][produk_id]" value="${item.id}">
-                <input type="hidden" name="items[${index}][jumlah]" value="${item.jumlah}">`;
+                <input type="hidden" name="items[${index}][jumlah]" value="${item.jumlah}">
+                <input type="hidden" name="items[${index}][subtotal]" value="${item.price * item.jumlah}">`;
         });
 
         cartCount.innerText = count;
         document.getElementById('total-harga-display').innerText = 'Rp ' + total.toLocaleString('id-ID');
         document.getElementById('total-harga-input').value = total;
+        
+        // Reset Kupon Jika Item Berubah (Proteksi Syarat Min Belanja)
+        const inputPromo = document.getElementById('input_promo');
+        const msgPromo = document.getElementById('promo-msg');
+        if (inputPromo.readOnly) {
+            inputPromo.readOnly = false;
+            inputPromo.value = '';
+            msgPromo.classList.add('hidden');
+        }
 
         if (cart.length > 0) {
             cartList.classList.remove('hidden');
@@ -335,7 +375,7 @@
                 const data = Object.fromEntries(formData.entries());
                 data.items = cart;
 
-                fetch('/admin/reservasi/store', {
+                fetch('/pesan', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

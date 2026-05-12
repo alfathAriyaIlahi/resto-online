@@ -14,7 +14,6 @@ class Produk extends Model
         'foto',
     ];
 
-    // Relasi Produk ke Kategori
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);

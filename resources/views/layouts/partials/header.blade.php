@@ -4,7 +4,7 @@
       <div class="md:flex md:items-center md:gap-12">
         <a class="block text-orange-600" href="/">
           <span class="sr-only">Home</span>
-          <span class="text-2xl font-bold italic">RESTO KITA</span>
+          <span class="text-2xl font-bold italic">Makan Yuk</span>
         </a>
       </div>
 

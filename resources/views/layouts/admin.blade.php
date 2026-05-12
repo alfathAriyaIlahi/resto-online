@@ -15,23 +15,26 @@
                 <p class="text-xs text-gray-400">MakanYuk Control Center</p>
             </div>
             <nav class="mt-4 px-4 space-y-2">
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition group">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-3 rounded-lg transition group {{ request()->routeIs('admin.dashboard') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Dashboard Overview</span>
                 </a>
-                <a href="{{ route('admin.kategori.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition">
+                <a href="{{ route('admin.kategori.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.kategori.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Kategori Produk</span>
                 </a>
-                <a href="{{ route('admin.produk.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition">
+                <a href="{{ route('admin.produk.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.produk.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Daftar Produk</span>
                 </a>
-                <a href="{{ route('admin.reservasi.index') }}" class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition">
+                <a href="{{ route('admin.reservasi.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.reservasi.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Reservasi</span>
+                </a>
+
+                <a href="{{ route('admin.kupon.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.kupon.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                    <span class="font-medium">Manajemen Kupon</span>
                 </a>
             </nav>
         </aside>
 
         <main class="flex-1">
-
             <header class="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
                 <div class="text-sm text-gray-500">Selamat datang kembali, <strong>{{ Auth::user()->name }}</strong></div>
                 <form method="POST" action="{{ route('logout') }}">

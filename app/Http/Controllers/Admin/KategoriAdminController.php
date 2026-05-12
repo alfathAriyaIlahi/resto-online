@@ -34,7 +34,6 @@ class KategoriAdminController extends Controller
         return redirect()->route('admin.kategori.index');
     }
 
-    // FUNGSI INI YANG KURANG TADI:
     public function destroy(string $id)
     {
         $kategori = Kategori::findOrFail($id);

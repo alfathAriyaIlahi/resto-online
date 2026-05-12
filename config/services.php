@@ -7,10 +7,8 @@ return [
     | Third Party Services
     |--------------------------------------------------------------------------
     |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
+    | File ini menyimpan kredensial untuk layanan pihak ketiga seperti Midtrans,
+    | Mailgun, dan lainnya. Data diambil dari file .env untuk keamanan.
     |
     */
 
@@ -33,6 +31,15 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+    ],
+
+    'midtrans' => [
+        'merchantId' => env('MIDTRANS_MERCHANT_ID', 'M913762921'),
+        'clientKey' => env('MIDTRANS_CLIENT_KEY', 'Mid-client-h-KwbUaKg0MnFgFa'),
+        'serverKey' => env('MIDTRANS_SERVER_KEY', 'Mid-server-ZWoX5aswGs1Z3cjqtgQk_VC4'),
+        'isProduction' => env('MIDTRANS_IS_PRODUCTION', false),
+        'isSanitized' => true,
+        'is3ds' => true,
     ],
 
 ];

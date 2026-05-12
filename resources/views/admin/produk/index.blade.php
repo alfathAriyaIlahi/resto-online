@@ -29,10 +29,8 @@
                 @forelse($produks as $produk)
                 <tr class="hover:bg-gray-50 transition duration-75">
                     <td class="py-4 px-6">
-                        {{-- Menggunakan kolom 'foto' sesuai image_a3720c.png --}}
                         @if($produk->foto)
                             @php
-                                // Membersihkan path agar tepat mengarah ke folder produk
                                 $fileName = str_replace(['public/', 'storage/', 'produk/'], '', $produk->foto);
                                 $path = 'produk/' . $fileName;
                             @endphp
@@ -47,7 +45,6 @@
                         @endif
                     </td>
                     <td class="py-4 px-6 text-gray-700 font-bold">
-                        {{-- Menggunakan kolom 'nama_produk' sesuai database --}}
                         {{ $produk->nama_produk }}
                     </td>
                     <td class="py-4 px-6 text-gray-700 font-medium">

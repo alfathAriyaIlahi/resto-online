@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="mx-auto max-w-lg px-4 py-8">
-    <!-- Breadcrumb / Navigasi Kecil -->
     <nav class="flex mb-4 text-sm text-gray-500">
         <a href="{{ route('admin.kategori.index') }}" class="hover:text-orange-600">Kategori</a>
         <span class="mx-2">/</span>

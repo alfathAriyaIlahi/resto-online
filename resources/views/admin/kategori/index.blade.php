@@ -14,7 +14,6 @@
         </div>
     @endif
 
-    <!-- Tabel Kategori -->
     <div class="overflow-hidden border border-gray-200 rounded-lg">
         <table class="w-full text-left border-collapse bg-white">
             <thead class="bg-gray-50">
@@ -26,7 +25,6 @@
             <tbody class="divide-y divide-gray-200">
                 @forelse($kategoris as $kategori)
                 <tr class="hover:bg-gray-50 transition duration-75">
-                    {{-- Di sini perubahannya: menggunakan nama_kategori --}}
                     <td class="py-4 px-6 text-gray-700 font-medium">
                         {{ $kategori->nama_kategori }}
                     </td>
