@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Produk extends Model
 {
@@ -14,8 +15,15 @@ class Produk extends Model
         'foto',
     ];
 
+    protected $with = ['options'];
+
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);
+    }
+
+    public function options(): HasMany
+    {
+        return $this->hasMany(ProdukOption::class, 'produk_id');
     }
 }

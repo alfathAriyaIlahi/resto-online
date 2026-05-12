@@ -11,7 +11,7 @@ use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $kategoris = Kategori::with('produks')->has('produks')->get();
+    $kategoris = Kategori::with('produks.options')->has('produks')->get();
     return view('welcome', compact('kategoris'));
 })->name('home');
 

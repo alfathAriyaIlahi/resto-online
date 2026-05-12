@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
+
 class ProfileController extends Controller
 {
 
@@ -24,29 +25,31 @@ class ProfileController extends Controller
 {
     $user = $request->user();
 
-    // Ambil data manual satu per satu untuk memastikan
+    // 1. Ambil data dari request
     $user->name = $request->name;
     $user->email = $request->email;
     $user->nomor_hp = $request->nomor_hp;
     $user->alamat = $request->alamat;
 
+    // 2. Logika Foto Profil
     if ($request->hasFile('foto_profil')) {
         if ($user->foto_profil) {
-            \Illuminate\Support\Facades\Storage::delete('public/profiles/' . $user->foto_profil);
+            \Illuminate\Support\Facades\Storage::disk('public')->delete('profiles/' . $user->foto_profil);
         }
-        $nama_file = time() . '_' . $request->file('foto_profil')->getClientOriginalName();
-        $request->file('foto_profil')->storeAs('public/profiles', $nama_file);
+
+        $file = $request->file('foto_profil');
+        $nama_file = time() . '_' . $file->getClientOriginalName();
+
+        // Simpan ke storage/app/public/profiles
+        $file->storeAs('profiles', $nama_file, 'public');
+
         $user->foto_profil = $nama_file;
     }
 
-    if ($user->isDirty('email')) {
-        $user->email_verified_at = null;
-    }
-
-    // Gunakan update() atau save()
+    // 3. Simpan permanen ke database
     $user->save();
 
-    return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    return redirect()->route('profile.edit')->with('status', 'profile-updated');
 }
 
     public function destroy(Request $request): RedirectResponse

@@ -58,9 +58,9 @@
     </header>
 
     <div class="mt-4 lg:mt-8 lg:grid lg:grid-cols-4 lg:items-start lg:gap-8">
-      <div class="hidden space-y-4 lg:block">
-        <p class="block text-xs font-medium text-gray-700 text-left">Kategori</p>
-        <ul class="mt-1 space-y-1 text-left">
+      <div class="hidden space-y-4 lg:block text-left">
+        <p class="block text-xs font-medium text-gray-700">Kategori</p>
+        <ul class="mt-1 space-y-1">
           <li><a href="/" class="block rounded-sm bg-gray-100 p-2 text-sm font-medium">Semua Menu</a></li>
           @foreach($kategoris as $kat)
             <li>
@@ -79,7 +79,9 @@
             <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               @foreach($kat->produks as $produk)
                 <li>
-                  <div class="group relative block rounded-2xl border border-gray-100 overflow-hidden bg-white shadow-sm transition hover:shadow-xl">
+                  <div class="group relative block rounded-2xl border border-gray-100 overflow-hidden bg-white shadow-sm transition hover:shadow-xl product-card"
+                       data-id="{{ $produk->id }}"
+                       data-options='@json($produk->options)'>
                     <span class="absolute top-4 right-4 rounded-full bg-orange-600 px-4 py-1 font-bold text-white z-10 text-sm shadow-md">
                       Rp {{ number_format($produk->harga, 0, ',', '.') }}
                     </span>
@@ -88,7 +90,7 @@
                     </div>
                     <div class="p-6 text-left">
                       <strong class="text-xl font-bold text-gray-900 capitalize"> {{ $produk->nama_produk }} </strong>
-                      <p class="mt-2 text-sm text-gray-600">Disajikan segar dengan standar kualitas Resto Kita.</p>
+                      <p class="mt-2 text-sm text-gray-600">Pilih topping dan ukuran sesukamu.</p>
                       <button type="button" onclick="addToCart({{ $produk->id }}, '{{ $produk->nama_produk }}', {{ $produk->harga }}, '{{ asset('storage/' . $produk->foto) }}')" class="mt-6 block w-full text-center rounded-lg border border-orange-600 bg-orange-600 px-5 py-3 text-sm font-bold text-white uppercase transition hover:bg-transparent hover:text-orange-600">
                         Tambah ke Keranjang
                       </button>
@@ -165,7 +167,21 @@
     <span id="cart-count" class="font-bold">0</span>
 </button>
 
-<div id="cart-modal" class="fixed inset-0 z-[60] hidden bg-gray-900/50 backdrop-blur-sm transition-opacity">
+<div id="option-modal" class="fixed inset-0 z-[80] hidden bg-gray-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative animate-fadeIn">
+        <h3 id="modal-product-name" class="text-xl font-black text-gray-900 uppercase mb-6 text-left">Pilih Opsi</h3>
+
+        <div id="option-container" class="max-h-[50vh] overflow-y-auto">
+            </div>
+
+        <div class="mt-8 flex gap-3">
+            <button onclick="document.getElementById('option-modal').classList.add('hidden')" class="flex-1 py-4 text-sm font-bold text-gray-400">Batal</button>
+            <button id="confirm-option-btn" class="flex-[2] py-4 bg-orange-600 text-white rounded-2xl font-bold shadow-lg shadow-orange-100 transition hover:bg-orange-700">Tambahkan</button>
+        </div>
+    </div>
+</div>
+
+<div id="cart-modal" class="fixed inset-0 z-[60] hidden bg-gray-900/50 backdrop-blur-sm transition-opacity text-left">
     <div class="flex min-h-full items-center justify-center p-4">
         <div class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl overflow-y-auto max-h-[85vh]">
             <button onclick="toggleCart()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -245,20 +261,115 @@
     }
 
     window.addToCart = function(id, name, price, img) {
-        const item = cart.find(i => i.id === id);
+        const productCard = document.querySelector(`.product-card[data-id="${id}"]`);
+
+        let options = [];
+        try {
+            options = JSON.parse(productCard.getAttribute('data-options') || '[]');
+        } catch (e) {
+            console.error("Error parsing options", e);
+        }
+
+        if (options && options.length > 0) {
+            showOptionModal(id, name, price, img, options);
+        } else {
+            const cartId = `prod-${id}`;
+            const item = cart.find(i => i.cartId === cartId);
+            if (item) {
+                item.jumlah++;
+            } else {
+                cart.push({ cartId, id, name, price, img, jumlah: 1 });
+            }
+            renderCart();
+        }
+    }
+
+    function showOptionModal(id, name, price, img, options) {
+        const modal = document.getElementById('option-modal');
+        const container = document.getElementById('option-container');
+        document.getElementById('modal-product-name').innerText = name;
+        container.innerHTML = '';
+
+        const groups = options.reduce((acc, opt) => {
+            (acc[opt.jenis] = acc[opt.jenis] || []).push(opt);
+            return acc;
+        }, {});
+
+        for (const [jenis, items] of Object.entries(groups)) {
+            let html = `<div class="mb-5 text-left">
+                <h4 class="text-[10px] font-black uppercase text-gray-400 mb-2 tracking-widest">${jenis}</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">`;
+
+            items.forEach(item => {
+                html += `
+                    <label class="cursor-pointer group">
+                        <input type="${jenis === 'size' ? 'radio' : 'checkbox'}"
+                               name="${jenis}"
+                               value="${item.id}"
+                               data-nama="${item.nama_opsi}"
+                               data-harga="${item.harga_tambahan}"
+                               class="peer hidden" ${jenis === 'size' ? 'required' : ''}>
+                        <div class="p-4 border border-gray-100 rounded-2xl text-sm font-bold transition peer-checked:border-orange-600 peer-checked:bg-orange-50 group-hover:bg-gray-50">
+                            <div class="flex justify-between items-center">
+                                <span>${item.nama_opsi}</span>
+                                <span class="text-orange-600 text-[10px]">+Rp ${parseInt(item.harga_tambahan).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                    </label>`;
+            });
+            html += `</div></div>`;
+            container.innerHTML += html;
+        }
+
+        document.getElementById('confirm-option-btn').onclick = () => finalizeAddToCart(id, name, price, img);
+        modal.classList.remove('hidden');
+    }
+
+    function finalizeAddToCart(id, name, price, img) {
+        const selected = [];
+        let extraPrice = 0;
+
+        const inputs = document.querySelectorAll('#option-container input:checked');
+
+        // Cek jika ada group 'size' tapi belum dipilih
+        const hasSize = document.querySelector('#option-container input[name="size"]');
+        const sizeSelected = document.querySelector('#option-container input[name="size"]:checked');
+
+        if (hasSize && !sizeSelected) {
+            alert("Silakan pilih ukuran terlebih dahulu!");
+            return;
+        }
+
+        inputs.forEach(input => {
+            selected.push(input.getAttribute('data-nama'));
+            extraPrice += parseFloat(input.getAttribute('data-harga'));
+        });
+
+        const finalPrice = price + extraPrice;
+        const optionString = selected.join(', ');
+        const cartId = `prod-${id}-${selected.sort().join('-')}`;
+
+        const item = cart.find(i => i.cartId === cartId);
         if (item) {
             item.jumlah++;
         } else {
-            cart.push({ id, name, price, img, jumlah: 1 });
+            cart.push({
+                cartId, id,
+                name: name + (optionString ? ` [${optionString}]` : ''),
+                price: finalPrice,
+                img, jumlah: 1
+            });
         }
+
+        document.getElementById('option-modal').classList.add('hidden');
         renderCart();
     }
 
     window.updateQty = function(id, delta) {
-        const item = cart.find(i => i.id === id);
+        const item = cart.find(i => i.cartId === id);
         if (item) {
             item.jumlah += delta;
-            if (item.jumlah < 1) cart = cart.filter(i => i.id !== id);
+            if (item.jumlah < 1) cart = cart.filter(i => i.cartId !== id);
         }
         renderCart();
     }
@@ -337,18 +448,19 @@
                 <li class="flex items-center gap-4 py-2 border-b border-gray-50 text-left">
                     <img src="${item.img}" class="size-16 rounded-xl object-cover shadow-sm">
                     <div class="flex-1">
-                        <h3 class="font-bold text-gray-900">${item.name}</h3>
-                        <p class="text-sm text-orange-600 font-semibold">Rp ${item.price.toLocaleString('id-ID')}</p>
+                        <h3 class="font-bold text-gray-900 text-sm leading-tight">${item.name}</h3>
+                        <p class="text-xs text-orange-600 font-semibold mt-1">Rp ${item.price.toLocaleString('id-ID')}</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="updateQty(${item.id}, -1)" class="size-7 rounded-full border border-gray-200 hover:bg-gray-100">-</button>
-                        <span class="font-bold">${item.jumlah}</span>
-                        <button type="button" onclick="updateQty(${item.id}, 1)" class="size-7 rounded-full border border-orange-200 text-orange-600 hover:bg-orange-50">+</button>
+                        <button type="button" onclick="updateQty('${item.cartId}', -1)" class="size-7 rounded-full border border-gray-200 hover:bg-gray-100">-</button>
+                        <span class="font-bold text-sm">${item.jumlah}</span>
+                        <button type="button" onclick="updateQty('${item.cartId}', 1)" class="size-7 rounded-full border border-orange-200 text-orange-600 hover:bg-orange-50">+</button>
                     </div>
                 </li>`;
 
             hiddenInputs.innerHTML += `
                 <input type="hidden" name="items[${index}][produk_id]" value="${item.id}">
+                <input type="hidden" name="items[${index}][nama_produk]" value="${item.name}">
                 <input type="hidden" name="items[${index}][jumlah]" value="${item.jumlah}">
                 <input type="hidden" name="items[${index}][subtotal]" value="${item.price * item.jumlah}">`;
         });
@@ -420,4 +532,13 @@
         }
     });
 </script>
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+    [x-cloak] { display: none !important; }
+</style>
 @endsection
