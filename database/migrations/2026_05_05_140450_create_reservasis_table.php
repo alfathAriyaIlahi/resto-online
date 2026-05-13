@@ -12,6 +12,9 @@ return new class extends Migration
             $table->id();
             $table->string('nama_pelanggan');
             $table->string('email');
+            $table->string('nomor_hp');
+            $table->integer('jumlah_orang');
+            $table->dateTime('waktu_reservasi');
             $table->text('catatan')->nullable();
             $table->timestamps();
         });

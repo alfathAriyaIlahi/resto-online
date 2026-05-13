@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\ReservasiAdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\IsAdmin;
 
 Route::get('/', function () {
     $kategoris = Kategori::with('produks.options')->has('produks')->get();
@@ -18,6 +20,9 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
+        if (Auth::user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
         return view('dashboard');
     })->name('dashboard');
 
@@ -32,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cek-kupon', [KuponController::class, 'cekKupon'])->name('kupon.cek');
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');

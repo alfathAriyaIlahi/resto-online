@@ -18,17 +18,19 @@
                             {{ __('Dashboard') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')">
-                            {{ __('Kategori') }}
-                        </x-nav-link>
+                        @if(Auth::user()->role === 'admin')
+                            <x-nav-link :href="route('admin.kategori.index')" :active="request()->routeIs('admin.kategori.*')">
+                                {{ __('Kategori') }}
+                            </x-nav-link>
 
-                        <x-nav-link :href="route('admin.produk.index')" :active="request()->routeIs('admin.produk.*')">
-                            {{ __('Produk') }}
-                        </x-nav-link>
+                            <x-nav-link :href="route('admin.produk.index')" :active="request()->routeIs('admin.produk.*')">
+                                {{ __('Produk') }}
+                            </x-nav-link>
 
-                        <x-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.*')">
-                            {{ __('Manajemen Kupon') }}
-                        </x-nav-link>
+                            <x-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.*')">
+                                {{ __('Manajemen Kupon') }}
+                            </x-nav-link>
+                        @endif
                     @endauth
                 </div>
             </div>
@@ -87,10 +89,13 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
             </x-responsive-nav-link>
+
             @auth
-                <x-responsive-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.index')">
-                    {{ __('Manajemen Kupon') }}
-                </x-responsive-nav-link>
+                @if(Auth::user()->role === 'admin')
+                    <x-responsive-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.index')">
+                        {{ __('Manajemen Kupon') }}
+                    </x-responsive-nav-link>
+                @endif
             @endauth
         </div>
 
