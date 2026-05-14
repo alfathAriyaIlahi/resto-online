@@ -1,12 +1,12 @@
 [phases.setup]
-    nixPkgs = ["php83", "php83Packages.composer", "nodejs_20", "git", "unzip", "zip"]
+nixPkgs = ["php83", "php83Packages.composer", "nodejs_20", "git", "unzip", "zip"]
 
 [phases.build]
-    cmds = [
-        "composer install --no-dev --optimize-autoloader",
-        "npm install",
-        "npm run build"
-    ]
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "npm install",
+    "npm run build" # Perintah ini yang akan meng-compile CSS & JS kamu
+]
 
 [start]
-    cmd = "php artisan serve --host 0.0.0.0 --port $PORT"
+cmd = "php artisan serve --host 0.0.0.0 --port $PORT"
