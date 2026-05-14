@@ -28,11 +28,14 @@
                     <span class="font-medium">Reservasi</span>
                 </a>
 
+                <a href="{{ route('admin.pesanan.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.pesanan.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
+                    <span class="font-medium">Daftar Pesanan</span>
+                </a>
+
                 <a href="{{ route('admin.kupon.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.kupon.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Manajemen Kupon</span>
                 </a>
 
-                <!-- INI MENU BARUNYA -->
                 <a href="{{ route('admin.pengguna.index') }}" class="flex items-center px-4 py-3 rounded-lg transition {{ request()->routeIs('admin.pengguna.*') ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-orange-50 hover:text-orange-600' }}">
                     <span class="font-medium">Daftar Pengguna</span>
                 </a>

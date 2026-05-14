@@ -253,6 +253,9 @@
     </div>
 </div>
 
+<!-- INI DIA SCRIPT WAJIB MIDTRANS-NYA -->
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+
 <script>
     let cart = [];
 
@@ -331,7 +334,6 @@
 
         const inputs = document.querySelectorAll('#option-container input:checked');
 
-        // Cek jika ada group 'size' tapi belum dipilih
         const hasSize = document.querySelector('#option-container input[name="size"]');
         const sizeSelected = document.querySelector('#option-container input[name="size"]:checked');
 
@@ -521,12 +523,15 @@
                             onSuccess: function() { window.location.href = '/dashboard'; },
                             onPending: function() { window.location.reload(); }
                         });
+                    } else {
+                        alert("Gagal mendapatkan kode pembayaran. Cek log server.");
                     }
                 })
-                .catch(() => {
+                .catch(err => {
                     btn.innerText = "Konfirmasi & Bayar Sekarang";
                     btn.disabled = false;
-                    alert("Kesalahan koneksi.");
+                    alert("Terjadi error. Pastikan Controller mereturn JSON.");
+                    console.error(err);
                 });
             };
         }

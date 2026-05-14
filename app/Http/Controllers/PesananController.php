@@ -14,7 +14,7 @@ class PesananController extends Controller
 {
     public function store(Request $request)
     {
-        // 1. Validasi Input
+
         $request->validate([
             'metode_pengiriman' => 'required|in:ambil_sendiri,pesan_antar',
             'alamat_lengkap' => 'required_if:metode_pengiriman,pesan_antar',
@@ -24,11 +24,10 @@ class PesananController extends Controller
 
         try {
             $snapToken = DB::transaction(function () use ($request) {
-                // 2. Simpan Header Pesanan
                 $pesanan = Pesanan::create([
                     'user_id'           => Auth::id(),
                     'nama_pelanggan'    => Auth::user()->name,
-                    'nomor_hp'          => $request->nomor_hp ?? '-', // Default jika kosong
+                    'nomor_hp'          => $request->nomor_hp ?? '-',
                     'metode_pengiriman' => $request->metode_pengiriman,
                     'alamat_lengkap'    => $request->alamat_lengkap,
                     'kode_promo'        => $request->kode_promo,
@@ -36,28 +35,25 @@ class PesananController extends Controller
                     'status'            => 'pending',
                 ]);
 
-                // 3. Simpan Detail Item
                 foreach ($request->items as $item) {
                     if ($item['jumlah'] > 0) {
                         DetailPesanan::create([
                             'pesanan_id' => $pesanan->id,
-                            'produk_id'  => $item['id'] ?? $item['produk_id'], // Penyesuaian key JS
+                            'produk_id'  => $item['id'] ?? $item['produk_id'],
                             'jumlah'     => $item['jumlah'],
-                            'subtotal'   => $item['price'] * $item['jumlah'], // Hitung subtotal
+                            'subtotal'   => $item['price'] * $item['jumlah'],
                         ]);
                     }
                 }
 
-                // 4. Konfigurasi Midtrans
-                Config::$serverKey = config('services.midtrans.serverKey');
-                Config::$isProduction = config('services.midtrans.isProduction');
-                Config::$isSanitized = config('services.midtrans.isSanitized');
-                Config::$is3ds = config('services.midtrans.is3ds');
+                Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+                Config::$isProduction = false; // Ubah ke true jika sudah live
+                Config::$isSanitized = true;
+                Config::$is3ds = true;
 
-                // 5. Buat Parameter Transaksi Midtrans
                 $params = [
                     'transaction_details' => [
-                        'order_id' => 'MAKAN-' . $pesanan->id . '-' . time(),
+                        'order_id' => $pesanan->id,
                         'gross_amount' => (int) $request->total_harga,
                     ],
                     'customer_details' => [
@@ -67,11 +63,9 @@ class PesananController extends Controller
                     ],
                 ];
 
-                // 6. Dapatkan Snap Token
                 return Snap::getSnapToken($params);
             });
 
-            // Kembalikan JSON untuk diproses JavaScript di welcome.blade.php
             return response()->json([
                 'status' => 'success',
                 'snap_token' => $snapToken
@@ -83,5 +77,24 @@ class PesananController extends Controller
                 'message' => 'Gagal memproses pesanan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function callback(Request $request)
+    {
+        $serverKey = env('MIDTRANS_SERVER_KEY');
+        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+        if ($hashed == $request->signature_key) {
+            $pesanan = Pesanan::find($request->order_id);
+            if ($pesanan) {
+                if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+                    $pesanan->update(['status' => 'dibayar']);
+                } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'expire' || $request->transaction_status == 'deny') {
+                    $pesanan->update(['status' => 'gagal']);
+                }
+            }
+        }
+
+        return response()->json(['message' => 'Sukses']);
     }
 }

@@ -30,6 +30,11 @@
                             <x-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.*')">
                                 {{ __('Manajemen Kupon') }}
                             </x-nav-link>
+
+                            <!-- MENU PESANAN UNTUK DEKSTOP -->
+                            <x-nav-link :href="route('admin.pesanan.index')" :active="request()->routeIs('admin.pesanan.*')">
+                                {{ __('Pesanan') }}
+                            </x-nav-link>
                         @endif
                     @endauth
                 </div>
@@ -94,6 +99,10 @@
                 @if(Auth::user()->role === 'admin')
                     <x-responsive-nav-link :href="route('admin.kupon.index')" :active="request()->routeIs('admin.kupon.index')">
                         {{ __('Manajemen Kupon') }}
+                    </x-responsive-nav-link>
+
+                    <x-responsive-nav-link :href="route('admin.pesanan.index')" :active="request()->routeIs('admin.pesanan.*')">
+                        {{ __('Pesanan') }}
                     </x-responsive-nav-link>
                 @endif
             @endauth

@@ -7,6 +7,7 @@ use App\Http\Controllers\KuponController;
 use App\Http\Controllers\Admin\KategoriAdminController;
 use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\Admin\ReservasiAdminController;
+use App\Http\Controllers\Admin\PesananAdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,7 @@ Route::get('/', function () {
     $kategoris = Kategori::with('produks.options')->has('produks')->get();
     return view('welcome', compact('kategoris'));
 })->name('home');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
@@ -31,9 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
-
     Route::post('/pesan', [PesananController::class, 'store'])->name('pesan.store');
-
     Route::post('/cek-kupon', [KuponController::class, 'cekKupon'])->name('kupon.cek');
 });
 
@@ -51,8 +51,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', IsAdmin::class])->gr
 
     Route::get('/reservasi', [ReservasiAdminController::class, 'index'])->name('reservasi.index');
     Route::delete('/reservasi/{id}', [ReservasiAdminController::class, 'destroy'])->name('reservasi.destroy');
-
     Route::post('/reservasi/store', [PesananController::class, 'store'])->name('reservasi.store');
+
+    Route::get('/pesanan', [PesananAdminController::class, 'index'])->name('pesanan.index');
 
     Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
 });
