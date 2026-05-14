@@ -14,7 +14,6 @@ class PesananController extends Controller
 {
     public function store(Request $request)
     {
-
         $request->validate([
             'metode_pengiriman' => 'required|in:ambil_sendiri,pesan_antar',
             'alamat_lengkap' => 'required_if:metode_pengiriman,pesan_antar',
@@ -24,6 +23,7 @@ class PesananController extends Controller
 
         try {
             $snapToken = DB::transaction(function () use ($request) {
+
                 $pesanan = Pesanan::create([
                     'user_id'           => Auth::id(),
                     'nama_pelanggan'    => Auth::user()->name,
@@ -41,25 +41,27 @@ class PesananController extends Controller
                             'pesanan_id' => $pesanan->id,
                             'produk_id'  => $item['id'] ?? $item['produk_id'],
                             'jumlah'     => $item['jumlah'],
-                            'subtotal'   => $item['price'] * $item['jumlah'],
+                            'subtotal'   => ($item['price'] ?? $item['subtotal'] / $item['jumlah']) * $item['jumlah'],
                         ]);
                     }
                 }
 
                 Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-                Config::$isProduction = false; // Ubah ke true jika sudah live
+                Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
                 Config::$isSanitized = true;
                 Config::$is3ds = true;
 
+                $midtrans_order_id = $pesanan->id . '-' . time();
+
                 $params = [
                     'transaction_details' => [
-                        'order_id' => $pesanan->id,
+                        'order_id' => $midtrans_order_id,
                         'gross_amount' => (int) $request->total_harga,
                     ],
                     'customer_details' => [
                         'first_name' => Auth::user()->name,
                         'email' => Auth::user()->email,
-                        'phone' => $request->nomor_hp,
+                        'phone' => $request->nomor_hp ?? '-',
                     ],
                 ];
 
@@ -72,6 +74,8 @@ class PesananController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Midtrans Error: ' . $e->getMessage());
+
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal memproses pesanan: ' . $e->getMessage()
@@ -82,14 +86,18 @@ class PesananController extends Controller
     public function callback(Request $request)
     {
         $serverKey = env('MIDTRANS_SERVER_KEY');
-        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+        $orderIdRaw = $request->order_id;
+        $orderId = explode('-', $orderIdRaw)[0];
+
+        $hashed = hash("sha512", $orderIdRaw . $request->status_code . $request->gross_amount . $serverKey);
 
         if ($hashed == $request->signature_key) {
-            $pesanan = Pesanan::find($request->order_id);
+            $pesanan = Pesanan::find($orderId);
             if ($pesanan) {
                 if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                     $pesanan->update(['status' => 'dibayar']);
-                } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'expire' || $request->transaction_status == 'deny') {
+                } elseif (in_array($request->transaction_status, ['cancel', 'expire', 'deny'])) {
                     $pesanan->update(['status' => 'gagal']);
                 }
             }
