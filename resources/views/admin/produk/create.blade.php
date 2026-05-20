@@ -1,116 +1,398 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('content')
-<div class="mx-auto max-w-2xl px-4 py-8">
-    <div class="rounded-lg bg-white p-8 shadow-lg border border-gray-100">
-        <h2 class="text-2xl font-bold mb-6 text-left">Tambah Menu Baru</h2>
+@section('admin_content')
 
-        <form action="{{ route('admin.produk.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+<div class="relative overflow-hidden rounded-[36px] bg-gradient-to-br from-orange-500 via-orange-400 to-yellow-300 p-8 mb-10 shadow-2xl">
+
+    {{-- GLOW --}}
+    <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/20 blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-yellow-100/30 blur-3xl"></div>
+
+    {{-- PATTERN --}}
+    <div class="absolute inset-0 opacity-[0.08]"
+         style="background-image: radial-gradient(white 1px, transparent 1px); background-size: 22px 22px;">
+    </div>
+
+    <div class="relative">
+
+        <span class="inline-flex rounded-full bg-white/20 px-4 py-2 text-xs font-black uppercase tracking-widest text-white backdrop-blur">
+            Admin Menu
+        </span>
+
+        <h1 class="mt-5 text-5xl font-black tracking-tight text-white">
+            Tambah Menu Baru
+        </h1>
+
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-orange-50">
+            Tambahkan menu baru beserta topping dan variasi ukuran dengan tampilan modern dan lebih interaktif.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="relative overflow-hidden rounded-[36px] border border-white/60 bg-white/80 shadow-2xl backdrop-blur-xl">
+
+    {{-- BACKGROUND EFFECT --}}
+    <div class="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-white to-yellow-50/40"></div>
+
+    <div class="absolute top-0 right-0 h-72 w-72 rounded-full bg-orange-200/30 blur-3xl"></div>
+
+    <div class="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-yellow-200/30 blur-3xl"></div>
+
+    <div class="relative p-8 md:p-10">
+
+        <form action="{{ route('admin.produk.store') }}"
+              method="POST"
+              enctype="multipart/form-data"
+              class="space-y-8">
+
             @csrf
 
+            {{-- INFORMASI MENU --}}
             <div>
-                <label class="block text-sm font-medium text-left">Nama Menu</label>
-                <input type="text" name="nama_produk" class="mt-1 w-full rounded-lg border-gray-300 p-3 border outline-none focus:ring-orange-500 focus:border-orange-500" required>
-            </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 text-left">Pilih Kategori</label>
-                <select name="kategori_id" class="mt-1 w-full rounded-lg border-gray-300 p-3 border focus:ring-orange-500 outline-none" required>
-                    <option value="">-- Pilih Kategori --</option>
-                    @foreach($kategoris as $kat)
-                        <option value="{{ $kat->id }}">{{ $kat->nama_kategori }}</option>
-                    @endforeach
-                </select>
-            </div>
+                <div class="flex items-center gap-3 mb-6">
 
-            <div>
-                <label class="block text-sm font-medium text-left">Harga (IDR)</label>
-                <input type="number" name="harga" class="mt-1 w-full rounded-lg border-gray-300 p-3 border outline-none focus:ring-orange-500 focus:border-orange-500" placeholder="Contoh: 25000" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-left">Foto Menu</label>
-                <input type="file" name="foto" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
-            </div>
-
-            <div class="mt-8 border-t border-gray-100 pt-6 text-left">
-                <h3 class="text-sm font-black text-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
-                    Opsi Tambahan (Topping / Size)
-                </h3>
-
-                <div id="wrapper-opsi" class="space-y-3">
-                    <div class="flex flex-wrap md:flex-nowrap gap-3 items-end bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                        <div class="flex-1 min-w-[100px]">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Jenis</label>
-                            <select name="opsi[0][jenis]" class="w-full rounded-xl border-gray-200 text-sm focus:ring-orange-500 border p-2 outline-none">
-                                <option value="topping">Topping</option>
-                                <option value="size">Size</option>
-                            </select>
-                        </div>
-                        <div class="flex-[2] min-w-[150px]">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Nama Opsi</label>
-                            <input name="opsi[0][nama_opsi]" type="text" class="w-full rounded-xl border-gray-200 p-2 text-sm border outline-none" placeholder="Contoh: Keju / Large">
-                        </div>
-                        <div class="flex-1 min-w-[100px]">
-                            <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 ml-1">Harga +</label>
-                            <input name="opsi[0][harga_tambahan]" type="number" class="w-full rounded-xl border-gray-200 p-2 text-sm border outline-none" placeholder="0">
-                        </div>
-                        <div class="pb-1">
-                            <button type="button" class="p-2 text-gray-300 cursor-not-allowed" disabled>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                            </button>
-                        </div>
+                    <div class="h-10 w-10 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M3 7h18M3 12h18M3 17h18"/>
+                        </svg>
                     </div>
+
+                    <div>
+
+                        <h2 class="text-2xl font-black text-gray-900">
+                            Informasi Menu
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Lengkapi data menu makanan atau minuman.
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <button type="button" onclick="tambahBarisOpsi()" class="mt-4 inline-flex items-center gap-2 text-[10px] font-black text-orange-600 hover:text-orange-700 transition uppercase tracking-widest bg-orange-50 px-3 py-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
-                    Tambah Opsi
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {{-- NAMA MENU --}}
+                    <div>
+
+                        <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                            Nama Menu
+                        </label>
+
+                        <input type="text"
+                               name="nama_produk"
+                               class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                               placeholder="Contoh: Nasi Goreng Spesial"
+                               required>
+
+                    </div>
+
+                    {{-- KATEGORI --}}
+                    <div>
+
+                        <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                            Pilih Kategori
+                        </label>
+
+                        <select name="kategori_id"
+                                class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                required>
+
+                            <option value="">-- Pilih Kategori --</option>
+
+                            @foreach($kategoris as $kat)
+
+                                <option value="{{ $kat->id }}">
+                                    {{ $kat->nama_kategori }}
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                    {{-- HARGA --}}
+                    <div>
+
+                        <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                            Harga
+                        </label>
+
+                        <input type="number"
+                               name="harga"
+                               class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                               placeholder="Contoh: 25000"
+                               required>
+
+                    </div>
+
+                    {{-- FOTO --}}
+                    <div>
+
+                        <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                            Foto Menu
+                        </label>
+
+                        <div class="rounded-2xl border border-dashed border-orange-200 bg-orange-50/50 p-4">
+
+                            <input type="file"
+                                   name="foto"
+                                   class="block w-full text-sm text-gray-500
+                                          file:mr-4
+                                          file:rounded-full
+                                          file:border-0
+                                          file:bg-orange-500
+                                          file:px-5
+                                          file:py-3
+                                          file:text-sm
+                                          file:font-black
+                                          file:text-white
+                                          hover:file:bg-orange-600">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- OPSI --}}
+            <div class="rounded-[32px] border border-orange-100 bg-white/80 p-6 shadow-lg">
+
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="h-10 w-10 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                            </svg>
+                        </div>
+
+                        <div>
+
+                            <h3 class="text-xl font-black text-gray-900">
+                                Opsi Tambahan
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Tambahkan topping atau ukuran menu.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <button type="button"
+                            onclick="tambahBarisOpsi()"
+                            class="inline-flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-orange-200 transition hover:-translate-y-1 hover:bg-orange-600 active:scale-95">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="h-4 w-4"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor"
+                             stroke-width="3">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M12 4v16m8-8H4"/>
+
+                        </svg>
+
+                        Tambah Opsi
+
+                    </button>
+
+                </div>
+
+                <div id="wrapper-opsi" class="space-y-4">
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 rounded-3xl border border-orange-100 bg-orange-50/60 p-5">
+
+                        <div>
+
+                            <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                Jenis
+                            </label>
+
+                            <select name="opsi[0][jenis]"
+                                    class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none">
+
+                                <option value="topping">Topping</option>
+                                <option value="size">Size</option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                Nama Opsi
+                            </label>
+
+                            <input name="opsi[0][nama_opsi]"
+                                   type="text"
+                                   class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none"
+                                   placeholder="Contoh: Extra Cheese">
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                Harga Tambahan
+                            </label>
+
+                            <input name="opsi[0][harga_tambahan]"
+                                   type="number"
+                                   class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none"
+                                   placeholder="0">
+
+                        </div>
+
+                        <div class="flex items-end">
+
+                            <button type="button"
+                                    disabled
+                                    class="w-full rounded-2xl bg-gray-200 px-4 py-3 text-xs font-black uppercase tracking-wide text-gray-400 cursor-not-allowed">
+
+                                Tidak Bisa Dihapus
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- BUTTON --}}
+            <div class="flex flex-wrap gap-4 pt-4">
+
+                <button type="submit"
+                        class="flex-1 rounded-2xl bg-orange-600 px-6 py-4 text-sm font-black uppercase tracking-wide text-white shadow-xl shadow-orange-200 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-700 active:scale-95">
+
+                    Simpan Menu
+
                 </button>
+
+                <a href="{{ route('admin.produk.index') }}"
+                   class="rounded-2xl border border-gray-200 bg-white px-6 py-4 text-sm font-black uppercase tracking-wide text-gray-600 transition hover:bg-gray-50">
+
+                    Batal
+
+                </a>
+
             </div>
-            <div class="flex gap-4 pt-8">
-                <button type="submit" class="flex-1 rounded-lg bg-orange-600 px-5 py-3 text-white font-bold hover:bg-orange-700 transition shadow-lg shadow-orange-100">Simpan Menu</button>
-                <a href="{{ route('admin.produk.index') }}" class="px-5 py-3 text-gray-600 border rounded-lg hover:bg-gray-50 transition">Batal</a>
-            </div>
+
         </form>
+
     </div>
+
 </div>
 
 <script>
+
     let barisIndex = 1;
+
     function tambahBarisOpsi() {
+
         const wrapper = document.getElementById('wrapper-opsi');
+
         const template = `
-            <div class="flex flex-wrap md:flex-nowrap gap-3 items-end bg-gray-50 p-4 rounded-2xl border border-gray-100 animate-slide-in">
-                <div class="flex-1 min-w-[100px]">
-                    <select name="opsi[${barisIndex}][jenis]" class="w-full rounded-xl border-gray-200 text-sm border p-2 outline-none focus:ring-orange-500">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 rounded-3xl border border-orange-100 bg-orange-50/60 p-5 animate-slide-in">
+
+                <div>
+
+                    <select name="opsi[${barisIndex}][jenis]"
+                            class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none">
+
                         <option value="topping">Topping</option>
                         <option value="size">Size</option>
+
                     </select>
+
                 </div>
-                <div class="flex-[2] min-w-[150px]">
-                    <input name="opsi[${barisIndex}][nama_opsi]" type="text" class="w-full rounded-xl border-gray-200 p-2 text-sm border outline-none focus:border-orange-500" placeholder="Nama opsi...">
+
+                <div>
+
+                    <input name="opsi[${barisIndex}][nama_opsi]"
+                           type="text"
+                           class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none"
+                           placeholder="Nama opsi...">
+
                 </div>
-                <div class="flex-1 min-w-[100px]">
-                    <input name="opsi[${barisIndex}][harga_tambahan]" type="number" class="w-full rounded-xl border-gray-200 p-2 text-sm border outline-none focus:border-orange-500" placeholder="0">
+
+                <div>
+
+                    <input name="opsi[${barisIndex}][harga_tambahan]"
+                           type="number"
+                           class="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm outline-none"
+                           placeholder="0">
+
                 </div>
-                <div class="pb-1">
-                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+
+                <div class="flex items-end">
+
+                    <button type="button"
+                            onclick="this.parentElement.parentElement.remove()"
+                            class="w-full rounded-2xl bg-red-500 px-4 py-3 text-xs font-black uppercase tracking-wide text-white transition hover:bg-red-600">
+
+                        Hapus
+
                     </button>
+
                 </div>
-            </div>`;
+
+            </div>
+        `;
+
         wrapper.insertAdjacentHTML('beforeend', template);
+
         barisIndex++;
+
     }
+
 </script>
 
 <style>
+
     @keyframes slide-in {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
+
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     }
-    .animate-slide-in { animation: slide-in 0.2s ease-out forwards; }
+
+    .animate-slide-in {
+        animation: slide-in 0.25s ease-out forwards;
+    }
+
 </style>
+
 @endsection

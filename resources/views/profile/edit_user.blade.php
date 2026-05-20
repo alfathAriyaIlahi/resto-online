@@ -1,155 +1,304 @@
 @extends('layouts.app')
 
 @section('content')
-<nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-orange-600">MakanYuk<span class="text-gray-800">.</span></a>
-            <a href="{{ route('dashboard') }}" class="text-sm font-bold text-gray-600 hover:text-orange-600 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                Kembali
-            </a>
+
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-orange-50 via-white to-yellow-50 py-14">
+
+    <div class="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-orange-300/20 blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-yellow-300/20 blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+
+        <div class="text-center mb-10">
+            <span class="inline-block rounded-full bg-orange-100 px-5 py-2 text-sm font-bold tracking-wide text-orange-600 shadow-sm">
+                PROFILE
+            </span>
+
+            <h1 class="mt-5 text-5xl font-black tracking-tight text-gray-900">
+                Profil Saya
+            </h1>
+
+            <p class="mt-4 text-base text-gray-600 max-w-2xl mx-auto">
+                Kelola informasi akun dan keamanan profile Anda dengan mudah.
+            </p>
         </div>
-    </div>
-</nav>
 
-<div class="py-12 bg-gray-50 min-h-screen">
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-
-        <div class="px-4 sm:px-0 mb-6 text-left">
-            <h2 class="text-3xl font-black text-gray-900 uppercase tracking-tight">Profil Saya</h2>
-            <p class="text-gray-500 mt-1">Kelola informasi akun dan pengaturan keamanan Anda.</p>
-        </div>
-
-        <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-6">
+        <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf
             @method('patch')
 
-            <div class="p-8 bg-white shadow-sm border border-gray-100 sm:rounded-3xl">
-                <div class="flex flex-col md:flex-row gap-12">
+            <div class="overflow-hidden rounded-[32px] border border-white/60 bg-white/80 shadow-2xl backdrop-blur-xl">
+                <div class="grid grid-cols-1 lg:grid-cols-3">
 
-                    <div class="md:w-1/3 flex flex-col items-center border-r border-gray-50 pr-8 text-center">
+                    <div class="relative overflow-hidden bg-gradient-to-br from-orange-500 to-orange-600 p-10 flex flex-col items-center justify-center text-center">
+                        <div class="absolute inset-0 opacity-20">
+                            <div class="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-white blur-3xl"></div>
+                            <div class="absolute bottom-0 right-0 h-52 w-52 rounded-full bg-yellow-200 blur-3xl"></div>
+                        </div>
+
                         <div class="relative group">
-                            <img id="preview-foto" src="{{ $user->foto_profil ? asset('storage/profiles/'.$user->foto_profil) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=FFEDD5&color=EA580C&size=256' }}"
-                                 class="size-48 rounded-full object-cover border-4 border-white shadow-xl">
-                            <label class="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer text-white text-xs font-bold uppercase">
-                                Ganti Foto
-                                <input type="file" name="foto_profil" class="hidden" onchange="previewImage(event)">
+                            <img id="preview-foto"
+                                 src="{{ $user->foto_profil ? asset('storage/profiles/'.$user->foto_profil) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=FFEDD5&color=EA580C&size=256' }}"
+                                 class="h-40 w-40 rounded-full object-cover border-4 border-white/30 shadow-2xl">
+
+                            <label class="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition group-hover:opacity-100 cursor-pointer">
+                                <span class="text-xs font-black uppercase tracking-widest text-white">
+                                    Ganti Foto
+                                </span>
+
+                                <input type="file"
+                                       name="foto_profil"
+                                       class="hidden"
+                                       onchange="previewImage(event)">
                             </label>
                         </div>
-                        <h4 class="mt-4 font-black text-gray-900">{{ $user->name }}</h4>
-                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">{{ $user->email }}</p>
+
+                        <h2 class="relative mt-8 text-3xl font-black text-white">
+                            {{ $user->name }}
+                        </h2>
+
+                        <p class="relative mt-3 text-sm tracking-widest text-orange-100 uppercase">
+                            {{ $user->email }}
+                        </p>
                     </div>
 
-                    <div class="md:w-2/3 space-y-5 text-left">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="lg:col-span-2 p-10">
+                        <div class="mb-8">
+                            <h3 class="text-3xl font-black text-gray-900">
+                                Informasi Akun
+                            </h3>
+
+                            <p class="mt-2 text-sm text-gray-500">
+                                Perbarui informasi profile Anda agar data tetap terbaru.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest">Nama Lengkap</label>
-                                <input name="name" type="text" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 focus:border-orange-500 border transition outline-none" value="{{ old('name', $user->name) }}" required>
+                                <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                    Nama Lengkap
+                                </label>
+
+                                <input name="name"
+                                       type="text"
+                                       value="{{ old('name', $user->name) }}"
+                                       class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                       required>
                             </div>
+
                             <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest">Nomor Handphone</label>
-                                <input name="nomor_hp" type="tel" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 focus:border-orange-500 border transition outline-none" value="{{ old('nomor_hp', $user->nomor_hp) }}" placeholder="08xxxxxx">
+                                <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                    Nomor Handphone
+                                </label>
+
+                                <input name="nomor_hp"
+                                       type="tel"
+                                       value="{{ old('nomor_hp', $user->nomor_hp) }}"
+                                       placeholder="08xxxxxx"
+                                       class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100">
                             </div>
                         </div>
 
                         <input type="hidden" name="email" value="{{ $user->email }}">
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest">Alamat Pengiriman</label>
-                            <textarea name="alamat" rows="3" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 focus:border-orange-500 border transition outline-none" placeholder="Tuliskan alamat lengkap rumah/kantor...">{{ old('alamat', $user->alamat) }}</textarea>
+                        <div class="mt-5">
+                            <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                Alamat Pengiriman
+                            </label>
+
+                            <textarea name="alamat"
+                                      rows="4"
+                                      class="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                      placeholder="Tuliskan alamat lengkap rumah/kantor...">{{ old('alamat', $user->alamat) }}</textarea>
                         </div>
 
-                        <div class="flex items-center gap-4 pt-4 border-t border-gray-50">
-                            <button type="submit" class="rounded-2xl bg-orange-600 px-10 py-4 text-sm font-bold text-white hover:bg-orange-700 transition shadow-lg shadow-orange-100 active:scale-95">
-                                Simpan Profil
-                            </button>
-                        </div>
+                        <button type="submit"
+                                class="mt-8 w-full rounded-2xl bg-orange-600 py-4 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-orange-200 transition-all duration-300 hover:-translate-y-1 hover:bg-orange-700 active:scale-95">
+                            Simpan Profil
+                        </button>
                     </div>
+
                 </div>
             </div>
         </form>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <div x-data="{ open: false }" class="p-8 bg-white shadow-sm border border-gray-100 rounded-3xl text-left">
-                <h3 class="text-lg font-bold text-gray-900 uppercase tracking-widest">Alamat Email</h3>
-                <p class="text-xs text-gray-500 mt-1 mb-6">Email aktif: <strong>{{ $user->email }}</strong></p>
-                <button @click="open = true" type="button" class="w-full rounded-2xl border-2 border-gray-900 px-6 py-4 text-sm font-bold text-gray-900 hover:bg-gray-900 hover:text-white transition active:scale-95">
+            <div x-data="{ open: false }"
+                 class="rounded-[32px] border border-white/60 bg-white/80 p-10 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:shadow-orange-200/50">
+
+                <h3 class="text-2xl font-black text-gray-900">
+                    Alamat Email
+                </h3>
+
+                <p class="mt-3 text-sm text-gray-500">
+                    Email aktif akun Anda:
+                </p>
+
+                <div class="mt-5 rounded-2xl bg-orange-50 border border-orange-100 p-5">
+                    <p class="text-sm font-bold text-gray-700">
+                        {{ $user->email }}
+                    </p>
+                </div>
+
+                <button @click="open = true"
+                        type="button"
+                        class="mt-8 w-full rounded-2xl border-2 border-orange-500 py-4 text-sm font-black uppercase tracking-wide text-orange-600 transition-all duration-300 hover:bg-orange-500 hover:text-white active:scale-95">
                     Ubah Email
                 </button>
 
-                <div x-show="open" x-cloak class="fixed inset-0 z-[70] flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-                    <div @click.away="open = false" class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative">
-                        <button @click="open = false" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-                        <div class="text-center mb-8">
-                            <h3 class="text-2xl font-black text-gray-900 uppercase">Ubah Email</h3>
-                        </div>
-                        <form method="post" action="{{ route('profile.update') }}" class="space-y-4">
-                            @csrf
-                            @method('patch')
-                            <input type="hidden" name="name" value="{{ $user->name }}">
-                            <input type="hidden" name="nomor_hp" value="{{ $user->nomor_hp }}">
-                            <input type="hidden" name="alamat" value="{{ $user->alamat }}">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest text-left">Email Baru</label>
-                                <input name="email" type="email" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 border outline-none" value="{{ $user->email }}" required>
+                <template x-teleport="body">
+                    <div x-show="open"
+                         x-cloak
+                         x-transition
+                         class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+
+                        <div @click.away="open = false"
+                             class="relative w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
+
+                            <button @click="open = false"
+                                    class="absolute top-5 right-5 text-gray-400 transition hover:text-gray-700">
+                                ✕
+                            </button>
+
+                            <div class="mb-8 text-center">
+                                <h3 class="text-3xl font-black uppercase text-gray-900">
+                                    Ubah Email
+                                </h3>
+
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Gunakan email aktif yang valid.
+                                </p>
                             </div>
-                            <button type="submit" class="w-full rounded-2xl bg-orange-600 py-4 text-sm font-bold text-white shadow-lg hover:bg-orange-700 transition">Konfirmasi Email</button>
-                        </form>
+
+                            <form method="post" action="{{ route('profile.update') }}" class="space-y-5">
+                                @csrf
+                                @method('patch')
+
+                                <input type="hidden" name="name" value="{{ $user->name }}">
+                                <input type="hidden" name="nomor_hp" value="{{ $user->nomor_hp }}">
+                                <input type="hidden" name="alamat" value="{{ $user->alamat }}">
+
+                                <div>
+                                    <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                        Email Baru
+                                    </label>
+
+                                    <input name="email"
+                                           type="email"
+                                           value="{{ $user->email }}"
+                                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                           required>
+                                </div>
+
+                                <button type="submit"
+                                        class="w-full rounded-2xl bg-orange-600 py-4 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-orange-200 transition-all duration-300 hover:bg-orange-700 active:scale-95">
+                                    Konfirmasi Email
+                                </button>
+                            </form>
+
+                        </div>
                     </div>
-                </div>
+                </template>
             </div>
 
-            <div x-data="{ open: false }" class="p-8 bg-white shadow-sm border border-gray-100 rounded-3xl text-left">
-                <h3 class="text-lg font-bold text-gray-900 uppercase tracking-widest">Keamanan</h3>
-                <p class="text-xs text-gray-500 mt-1 mb-6">Ganti password secara berkala agar akun tetap aman.</p>
-                <button @click="open = true" type="button" class="w-full rounded-2xl bg-gray-900 px-6 py-4 text-sm font-bold text-white hover:bg-black transition shadow-lg active:scale-95">
+            <div x-data="{ open: false }"
+                 class="rounded-[32px] border border-white/60 bg-white/80 p-10 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:shadow-orange-200/50">
+
+                <h3 class="text-2xl font-black text-gray-900">
+                    Keamanan
+                </h3>
+
+                <p class="mt-3 text-sm text-gray-500">
+                    Ganti password secara berkala agar akun tetap aman.
+                </p>
+
+                <button @click="open = true"
+                        type="button"
+                        class="mt-8 w-full rounded-2xl bg-gray-900 py-4 text-sm font-black uppercase tracking-wide text-white shadow-lg transition hover:bg-black active:scale-95">
                     Ganti Password
                 </button>
 
-                <div x-show="open" x-cloak class="fixed inset-0 z-[70] flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-                    <div @click.away="open = false" class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl relative">
-                        <button @click="open = false" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor font-bold"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-                        <div class="text-center mb-8">
-                            <h3 class="text-2xl font-black text-gray-900 uppercase">Ubah Password</h3>
+                <template x-teleport="body">
+                    <div x-show="open"
+                         x-cloak
+                         x-transition
+                         class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+
+                        <div @click.away="open = false"
+                             class="relative w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
+
+                            <button @click="open = false"
+                                    class="absolute top-5 right-5 text-gray-400 transition hover:text-gray-700">
+                                ✕
+                            </button>
+
+                            <div class="mb-8 text-center">
+                                <h3 class="text-3xl font-black uppercase text-gray-900">
+                                    Ubah Password
+                                </h3>
+
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Gunakan password yang kuat dan aman.
+                                </p>
+                            </div>
+
+                            <form method="post" action="{{ route('password.update') }}" class="space-y-4">
+                                @csrf
+                                @method('put')
+
+                                <div>
+                                    <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                        Password Saat Ini
+                                    </label>
+
+                                    <input name="current_password"
+                                           type="password"
+                                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                           required>
+                                </div>
+
+                                <div>
+                                    <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                        Password Baru
+                                    </label>
+
+                                    <input name="password"
+                                           type="password"
+                                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                           required>
+                                </div>
+
+                                <div>
+                                    <label class="mb-2 block text-xs font-black uppercase tracking-widest text-gray-400">
+                                        Konfirmasi Password
+                                    </label>
+
+                                    <input name="password_confirmation"
+                                           type="password"
+                                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+                                           required>
+                                </div>
+
+                                <button type="submit"
+                                        class="w-full rounded-2xl bg-orange-600 py-4 text-sm font-black uppercase tracking-wide text-white shadow-lg shadow-orange-200 transition-all duration-300 hover:bg-orange-700 active:scale-95">
+                                    Update Password
+                                </button>
+                            </form>
+
                         </div>
-                        <form method="post" action="{{ route('password.update') }}" class="space-y-4">
-                            @csrf
-                            @method('put')
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest text-left">Password Saat Ini</label>
-                                <input name="current_password" type="password" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 border outline-none" required>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest text-left">Password Baru</label>
-                                <input name="password" type="password" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 border outline-none" required>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-widest text-left">Konfirmasi Password</label>
-                                <input name="password_confirmation" type="password" class="w-full rounded-2xl border-gray-200 p-4 text-sm focus:ring-orange-500 border outline-none" required>
-                            </div>
-                            <button type="submit" class="w-full rounded-2xl bg-orange-600 py-4 text-sm font-bold text-white shadow-lg hover:bg-orange-700 transition">Update Password</button>
-                        </form>
                     </div>
-                </div>
+                </template>
             </div>
+
         </div>
 
         @if (session('status') === 'password-updated' || session('status') === 'profile-updated')
-            <div
-                x-data="{ show: true }"
-                x-show="show"
-                x-init="setTimeout(() => show = false, 3000)"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-y-10"
-                x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-500"
-                x-transition:leave-start="opacity-100 translate-y-0"
-                x-transition:leave-end="opacity-0 translate-y-10"
-                class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-8 py-4 rounded-2xl shadow-2xl z-[100] font-bold flex items-center gap-2"
-            >
-                <span>✅ Perubahan Berhasil Disimpan!</span>
+            <div x-data="{ show: true }"
+                 x-show="show"
+                 x-init="setTimeout(() => show = false, 3000)"
+                 class="fixed bottom-10 left-1/2 z-[100] -translate-x-1/2 rounded-2xl bg-gray-900 px-8 py-4 font-bold text-white shadow-2xl">
+                ✅ Perubahan Berhasil Disimpan!
             </div>
         @endif
 
@@ -158,16 +307,21 @@
 
 <script>
     function previewImage(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-            var output = document.getElementById('preview-foto');
+        const reader = new FileReader();
+
+        reader.onload = function () {
+            const output = document.getElementById('preview-foto');
             output.src = reader.result;
         };
+
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>
 
 <style>
-    [x-cloak] { display: none !important; }
+    [x-cloak] {
+        display: none !important;
+    }
 </style>
-@endsectionc
+
+@endsection
